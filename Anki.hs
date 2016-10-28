@@ -1,24 +1,25 @@
 import Text.ParserCombinators.Parsec
 import System.Environment
-import Control.Monad
+import Data.List
 import OrgParser
 
-textMap :: (String -> String) -> OrgTree -> OrgTree
-textMap f (OrgTree (OrgHeader n t c) trees) = OrgTree (OrgHeader n t (f c)) (map (textMap f) trees)
+
+ankinizeContent :: String -> String
+ankinizeContent = (intercalate " ") . lines
+
 
 toDeck :: OrgTree -> String
 toDeck (OrgTree _ trees) = concat $ map toSubdeck trees
 
 toSubdeck :: OrgTree -> String
-toSubdeck (OrgTree header trees) = concat $ map (((title header ++ ". ") ++) . toCard) trees
+toSubdeck (OrgTree header trees) = concat $ map (((title header ++ " ") ++) . toCard) trees
 
 toCard :: OrgTree -> String
-toCard (OrgTree header _) = concat [ title header
-                                   , content header ]
+toCard (OrgTree header _) = (title header) ++ "\t" ++ (ankinizeContent $ content header) ++ "\n"
 
 toAnki :: OrgTree -> IO ()
 toAnki tree@(OrgTree header _) = do
-  writeFile (title header) (toDeck tree)
+  writeFile ("anki." ++ title header ++ ".csv") (toDeck tree)
 
 main :: IO ()
 main = do
@@ -28,5 +29,5 @@ main = do
       result <- parse orgtree "" <$> readFile filename
       case result of
         Left err -> print err
-        Right tree -> print tree
+        Right tree -> mapM_ toAnki tree
     _ -> putStrLn "Error. You must indicate a file."

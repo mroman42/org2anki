@@ -2,10 +2,25 @@ import Text.ParserCombinators.Parsec
 import System.Environment
 import Data.List
 import OrgParser
+import Text.Regex
 
+sub regex = flip (subRegex regex)
 
+latexmarks :: String -> String
+latexmarks = foldr (.) id
+  [ sub (mkRegex "\\\\\\(") "[$]"
+  , sub (mkRegex "\\\\\\)") "[/$]"
+  , sub (mkRegex "\\\\\\[") "[$$]"
+  , sub (mkRegex "\\\\\\]") "[/$$]"
+  ]
+
+bolditmarks :: String -> String
+bolditmarks = foldr (.) id
+  [ sub (mkRegex "\\*([^\\*]*)\\*") "<b>\\1</b>"
+  ]
+  
 ankinizeContent :: String -> String
-ankinizeContent = (intercalate " ") . lines
+ankinizeContent = bolditmarks . latexmarks . (intercalate " ") . lines
 
 
 toDeck :: OrgTree -> String

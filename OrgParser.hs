@@ -54,6 +54,13 @@ asts = length <$> many1 (try (char '*'))
 orgfile :: Parser [OrgHeader]
 orgfile = many header
 
+
+
+data OrgTree = OrgTree OrgHeader [OrgTree]
+
+instance Show OrgTree where
+  show = showTree
+
 -- | Given a list of headers, structures it into a tree, where
 -- every header has a list of child headers.
 struct :: [OrgHeader] -> [OrgTree]
@@ -65,7 +72,6 @@ struct (h:hs) = OrgTree h (struct internal) : (struct reminder)
 orgtree :: Parser [OrgTree]
 orgtree = struct <$> orgfile
 
-data OrgTree = OrgTree OrgHeader [OrgTree]
 
 showTree :: OrgTree -> String
 showTree (OrgTree head trees) = unlines $ map ("| " ++) $ lines $ unlines
@@ -75,5 +81,3 @@ showTree (OrgTree head trees) = unlines $ map ("| " ++) $ lines $ unlines
   , concatMap showTree trees
   ]
 
-instance Show OrgTree where
-  show = showTree

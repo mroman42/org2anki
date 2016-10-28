@@ -3,8 +3,8 @@ import System.Environment
 import Control.Monad
 import OrgParser
 
-textTrans :: (String -> String) -> OrgTree -> OrgTree
-textTrans f (OrgTree (OrgHeader n t c) trees) = OrgTree (OrgHeader n t (f c)) (map (textTrans f) trees)
+textMap :: (String -> String) -> OrgTree -> OrgTree
+textMap f (OrgTree (OrgHeader n t c) trees) = OrgTree (OrgHeader n t (f c)) (map (textMap f) trees)
 
 toDeck :: OrgTree -> String
 toDeck (OrgTree _ trees) = concat $ map toSubdeck trees
@@ -14,7 +14,7 @@ toSubdeck (OrgTree header trees) = concat $ map (((title header ++ ". ") ++) . t
 
 toCard :: OrgTree -> String
 toCard (OrgTree header _) = concat [ title header
-                                       , content header ]
+                                   , content header ]
 
 toAnki :: OrgTree -> IO ()
 toAnki tree@(OrgTree header _) = do
@@ -28,5 +28,5 @@ main = do
       result <- parse orgtree "" <$> readFile filename
       case result of
         Left err -> print err
-        Right tree -> mapM_ toAnki tree
+        Right tree -> print tree
     _ -> putStrLn "Error. You must indicate a file."

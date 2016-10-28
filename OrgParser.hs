@@ -5,6 +5,7 @@ module OrgParser
   ) where
 
 import Text.ParserCombinators.Parsec
+import Prelude hiding (head)
 
 data OrgHeader = OrgHeader { level :: Int
                            , title :: String
@@ -34,7 +35,6 @@ orgfile = many (try header)
 
 
 data OrgTree = OrgTree OrgHeader [OrgTree]
-  deriving (Show)
 
 struct :: [OrgHeader] -> [OrgTree]
 struct [] = []
@@ -43,3 +43,14 @@ struct (h:hs) = OrgTree h (struct internal) : (struct reminder)
 
 orgtree :: Parser [OrgTree]
 orgtree = struct <$> orgfile
+
+instance Show OrgTree where
+  show = showTree
+
+showTree :: OrgTree -> String
+showTree (OrgTree head trees) = unlines $ map ("| " ++) $ lines $ unlines
+  [ "## Title:" ++ title head
+  , "~~ "
+  , content head
+  , concatMap showTree trees
+  ]

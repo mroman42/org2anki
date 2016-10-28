@@ -1,19 +1,19 @@
 * Boolean algebra
 ** Basic operators.
-*** and operator
-It is commutative and associative:
+*** And operator
+It is *commutative* and *associative*:
 \[a\wedge b\]
-*** or operator
+*** Or operator
 It is commutative and associative:
 \[a\vee b\]
-*** negation
+*** Negation
 We can negate a variable like this:
 \[\overline{a}\]
 ** DeMorgan Laws.
-*** first rule
+*** First rule
 We have that:
 \[\overline{a} \vee \overline{b} = \overline{a \wedge b}\]
-*** second rule
+*** Second rule
 We have that:
 \[\overline{a} \wedge \overline{b} = \overline{a \vee b}\]
 

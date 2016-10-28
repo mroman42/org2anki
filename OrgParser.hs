@@ -21,17 +21,23 @@ instance Ord OrgHeader where
 eol :: Parser ()
 eol = ((char '\n') >> return ()) <|> eof
 
-text :: Parser String
-text = unlines <$> many (try textline)
-
 textline :: Parser String
-textline = (:) <$> noneOf "*" <*> manyTill anyChar eol
+textline = notFollowedBy (char '*') >> many (noneOf "\n")
+
+text :: Parser String
+text = unlines <$> sepEndBy (try textline) (try $ char '\n')
 
 header :: Parser OrgHeader
-header = OrgHeader <$> (length <$> many (try (char '*'))) <*> ((char ' ') >> textline) <*> text
+header = OrgHeader
+  <$> asts
+  <*> ((char ' ') >> manyTill anyChar eol)
+  <*> text
+
+asts :: Parser Int
+asts = length <$> many1 (try (char '*'))
 
 orgfile :: Parser [OrgHeader]
-orgfile = many (try header)
+orgfile = many header
 
 
 data OrgTree = OrgTree OrgHeader [OrgTree]

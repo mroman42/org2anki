@@ -1,0 +1,25 @@
+* Boolean algebra
+** Basic operators.
+*** and operator
+It is commutative and associative:
+\[a\wedge b\]
+*** or operator
+It is commutative and associative:
+\[a\vee b\]
+*** negation
+We can negate a variable like this:
+\[\overline{a}\]
+** DeMorgan Laws.
+*** first rule
+We have that:
+\[\overline{a} \vee \overline{b} = \overline{a \wedge b}\]
+*** second rule
+We have that:
+\[\overline{a} \wedge \overline{b} = \overline{a \vee b}\]
+
+* Analysis I
+** Symbols
+*** Integral
+\[\int_a^b\]
+*** Derivative
+\[\frac{d}{dx}\]

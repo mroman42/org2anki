@@ -16,7 +16,6 @@ We have that:
 *** second rule
 We have that:
 \[\overline{a} \wedge \overline{b} = \overline{a \vee b}\]
-
 * Analysis I
 ** Symbols
 *** Integral

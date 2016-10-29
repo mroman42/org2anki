@@ -4,6 +4,7 @@ import Data.List
 import OrgParser
 import Text.Regex
 
+sub :: Regex -> String -> String -> String
 sub regex = flip (subRegex regex)
 
 latexmarks :: String -> String
@@ -36,12 +37,15 @@ toAnki :: OrgTree -> IO ()
 toAnki tree@(OrgTree header _) = do
   writeFile ("anki." ++ title header ++ ".csv") (toDeck tree)
 
+deleteCommentLines :: String -> String
+deleteCommentLines = unlines . (filter (\x -> (x == []) || (head x /= '#'))) . lines
+
 main :: IO ()
 main = do
   args <- getArgs
   case args of
     [filename] -> do
-      result <- parse orgtree "" <$> readFile filename
+      result <- (parse orgtree "" . deleteCommentLines) <$> readFile filename
       case result of
         Left err -> print err
         Right tree -> mapM_ toAnki tree

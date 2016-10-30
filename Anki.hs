@@ -13,6 +13,7 @@ latexmarks = foldr (.) id
   , sub (mkRegex "\\\\\\)") "[/$]"
   , sub (mkRegex "\\\\\\[") "[$$]"
   , sub (mkRegex "\\\\\\]") "[/$$]"
+  , sub (mkRegex "\\$([^$]*)\\$") "[$]\\1[/$]"
   ]
 
 bolditmarks :: String -> String

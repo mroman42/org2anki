@@ -52,7 +52,7 @@ asts = length <$> many1 (try (char '*'))
 
 -- | Parses a complete org-file, dividing it in headers
 orgfile :: Parser [OrgHeader]
-orgfile = many header
+orgfile = many ((try (many newline)) >> header)
 
 
 
